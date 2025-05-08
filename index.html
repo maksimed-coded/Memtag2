@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNDTAG - Главная</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
+    <script src="https://soundtagtutorial.vercel.app/assets/js/XAlert.js@cache=1742053199"></script>
+    <link rel="stylesheet" href="assets/css/app.css@cache=1742053199.css"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.ico" />
+    
+    <style>
+        body {
+            background: linear-gradient(45deg,#2d3748,#1a202c,#2d3748);
+            animation: gradientShift 10s ease infinite;
+            background-size: 200% 200%;
+            font-family: Arial, sans-serif;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .animate-general {
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .button-hover {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .button-hover:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 5px 15px rgba(163,191,250,0.5);
+        }
+        
+        .button-hover:active {
+            transform: scale(0.95) rotate(-2deg);
+            opacity: 0.8;
+        }
+        
+        .button-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .button-hover:hover::before {
+            left: 100%;
+        }
+        
+        /* Стили для формы авторизации */
+        .login-container {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 320px;
+            border: 1px solid #333;
+        }
+        
+        .login-container h2 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            position: relative;
+            margin: 15px 0;
+        }
+        
+        .login-container input {
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .login-container input:focus {
+            outline: none;
+            border-color: #555;
+            background-color: #333;
+        }
+        
+        .login-container button {
+            padding: 12px;
+            width: 100%;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .login-container button:hover {
+            background-color: #0b5ed7;
+        }
+        
+        .captcha-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #252525;
+            border-radius: 5px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+        
+        #refresh-captcha {
+            background-color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        #refresh-captcha:hover {
+            background-color: #5c636a;
+        }
+        
+        #error {
+            color: #ff6b6b;
+            height: 20px;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+        }
+        
+        .show-password {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 12px;
+            user-select: none;
+        }
+        
+        .show-password:hover {
+            color: #ddd;
+        }
+        
+        .attempts-warning {
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: 5px;
+            text-align: center;
+        }
+        
+        #captcha-question {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        /* Скрытие элементов */
+        .hidden {
+            display: none;
+        }
+        
+        /* Стили для страницы звуков */
+        .content-container {
+            padding-bottom: 50px;
+        }
+        
+        .fade-text {
+            animation: fadeText 2s ease-in-out infinite;
+        }
+        
+        @keyframes fadeText {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        .copied {
+            background-color: #4CAF50 !important;
+            animation: none;
+        }
+        
+        .copied::after {
+            content: ' ✓';
+        }
+        
+        /* Toast уведомления */
+        #toast {
+            z-index: 9999;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 6;
+            justify-content: center;
+            display: none;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        .toast-content {
+            background: #1E1E1E;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+        }
+    </style>
+</head>
+<body class="text-gray-200 select-none cursor-pointer">
+    <!-- Toast уведомление -->
+    <div id="toast" class="hidden">
+        <div class="toast-content">
+            <p id="toast__text" class="text-medium text-white">Недействительный запрос</p>
+        </div>
+    </div>
+    
+    <!-- Главная страница -->
+    <div id="main-page">
+        <div class="flex flex-col mx-auto justify-center text-center mt-36 animate-general w-[75%]">
+            <h1 class="text-[28px] font-bold text-gray-100 animate-pulse">САЙТ КАНАЛА <a href="https://i.postimg.cc/WpSQmt67/images.jpg">@mem_soundtag</a></h1>
+            <div class="flex flex-col items-center mt-[20px] gap-[15px]">
+                <a href="https://t.me/mem_soundtag" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">
+                    <img src="https://i.postimg.cc/KvGhc3hh/telegram.png" width="24" height="24">Наш Telegram
+                </a>
+                <a href="https://www.tiktok.com/@mem.tag?_t=ZS-8vuSMaDbylD&_r=1" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">
+                    <img src="https://i.postimg.cc/N0sVg6v3/tiktok.png" width="24" height="24">ТикТок
+                </a>
+                <a href="#" onclick="showPage('sounds-page')" class="relative flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover overflow-hidden">
+                    <img src="https://i.postimg.cc/65CpkX08/2058599.png" width="24" height="24">Звуки
+                </a>
+                <a href="https://te-xraboty.vercel.app/" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">
+                    <img src="https://i.postimg.cc/x1tJZQfK/images-Photoroom.png" width="24" height="24">Донат "СКОРО!"
+                </a>
+                <a href="#" onclick="showPage('auth-page')" class="relative flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover overflow-hidden">
+                    <span class="h-[25px] flex items-center justify-center w-[190px] left-[-70px] top-[10px] absolute bg-white text-zinc-800 rotate-[-45deg] text-[9px] font-bold animate-pulse">Новове!</span>Авторизация
+                </a>
+                <a href="https://t.me/sndmem_bot" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">
+                    <img src="https://i.postimg.cc/ncB2W0PH/223494.png" width="24" height="24">Поддержка
+                </a>
+            </div>
+            <p class="mt-6 text-xs text-gray-400 animate-bounce">У нас нет других сайтов и соцсетей, ТОЛЬКО ТГК и TikTok.</p>
+        </div>
+    </div>
+    
+    <!-- Страница авторизации -->
+    <div id="auth-page" class="hidden flex justify-center items-center min-h-screen">
+        <div class="login-container">
+            <h2>Авторизация</h2>
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Логин" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Пароль" required>
+                <span class="show-password" onclick="togglePassword()">Показать</span>
+            </div>
+            
+            <div class="captcha-container">
+                <p>Введите ответ на вопрос:</p>
+                <p id="captcha-question"></p>
+                <input type="text" id="captcha-answer" placeholder="Ответ">
+                <button id="refresh-captcha" onclick="generateCaptcha()">Обновить каптчу</button>
+            </div>
+            
+            <div id="attempts-info" class="attempts-warning"></div>
+            <button onclick="login()">Войти</button>
+            <button onclick="showPage('main-page')" style="margin-top: 10px; background-color: #6c757d;">Назад</button>
+            <p id="error"></p>
+        </div>
+    </div>
+    
+    <!-- Страница звуков -->
+    <div id="sounds-page" class="hidden">
+        <div class="content-container">
+            <div class="flex flex-col mx-auto justify-center text-center mt-8 animate-general w-[75%]">
+                <h1 class="text-[28px] font-bold text-gray-100">ЗВУКИ</h1>
+                <div class="flex flex-col items-center mt-[20px] gap-[15px]">
+                    <a href="#" onclick="showPage('main-page')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                        Назад
+                    </a>
+                    <button onclick="copyToClipboard('https://memtag.github.io/go/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Changes</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/t/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Tvorog</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/d/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Ding-Dong</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/o/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">OUDAP</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/g/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Generator</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/e/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">ERONDON</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/k/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Kid Laugh</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/u/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Gaiti</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/n/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Ston</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/w/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">WhatsApp bass boosted</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/r/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Discord bass boosted</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/i/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Sigma boy</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/m/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">DIMOOON</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/s/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Shapochka</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/atl/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">AutoTune Laugh</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/p/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Pozharnaya trivoga</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/repo/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Kruella(R.E.P.O.)</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/l/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Linganguliguli(no image)</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/st/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Sret i stonet(no image)</button>
+                    <button onclick="copyToClipboard('https://memtag.github.io/kz/')" class="flex gap-3 items-center justify-center text-center py-[12px] px-[24px] bg-[#a3bffa] rounded-lg text-[18px] w-[250px] text-zinc-800 inline-block button-hover">Kazakstan ugrozhaet(no image)</button>
+                </div>
+                <p class="mt-6 text-xs text-gray-400 fade-text">Посмотреть туториал можно в <a href="https://www.tiktok.com/@mem.tag?_t=ZS-8vuSMaDbylD&_r=1"><u>ТикТоке</u></a>
+                    и <a href="https://t.me/mem_soundtag"><u>ТГК</u></a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Защита от копирования
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12') {
+                e.preventDefault();
+            }
+        });
+        
+        // Функция для переключения между страницами
+        function showPage(pageId) {
+            document.getElementById('main-page').classList.add('hidden');
+            document.getElementById('auth-page').classList.add('hidden');
+            document.getElementById('sounds-page').classList.add('hidden');
+            
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            // Прокрутка вверх при переключении страниц
+            window.scrollTo(0, 0);
+        }
+        
+        // Логика авторизации
+        const users = {
+            "admin": "6a0S0",
+            "user2": "password2",
+            "user3": "password3",
+            "user4": "password4",
+            "user5": "password5",
+            "user6": "password6",
+            "user7": "password7",
+            "user8": "password8",
+            "user9": "password9",
+            "user10": "password10",
+            "user11": "password11",
+            "user12": "password12",
+            "user13": "password13",
+            "user14": "password14",
+            "user15": "password15",
+            "user16": "password16",
+            "user17": "password17",
+            "user18": "password18",
+            "user19": "password19",
+            "user20": "password20",
+            "user21": "password21",
+            "user22": "password22",
+            "user23": "password23",
+            "user24": "password24",
+            "user25": "password25",
+            "user26": "password26",
+            "user27": "password27",
+            "user28": "password28",
+            "user29": "password29",
+            "user30": "password30"
+        };
+
+        const redirectLinks = {
+            "admin": "https://t.me/mem_soundtag",
+            "user2": "https://example.com/user2",
+            "user3": "https://example.com/user3",
+            "user4": "https://example.com/user4",
+            "user5": "https://example.com/user5",
+            "user6": "https://example.com/user6",
+            "user7": "https://example.com/user7",
+            "user8": "https://example.com/user8",
+            "user9": "https://example.com/user9",
+            "user10": "https://example.com/user10",
+            "user11": "https://example.com/user11",
+            "user12": "https://example.com/user12",
+            "user13": "https://example.com/user13",
+            "user14": "https://example.com/user14",
+            "user15": "https://example.com/user15",
+            "user16": "https://example.com/user16",
+            "user17": "https://example.com/user17",
+            "user18": "https://example.com/user18",
+            "user19": "https://example.com/user19",
+            "user20": "https://example.com/user20",
+            "user21": "https://example.com/user21",
+            "user22": "https://example.com/user22",
+            "user23": "https://example.com/user23",
+            "user24": "https://example.com/user24",
+            "user25": "https://example.com/user25",
+            "user26": "https://example.com/user26",
+            "user27": "https://example.com/user27",
+            "user28": "https://example.com/user28",
+            "user29": "https://example.com/user29",
+            "user30": "https://example.com/user30"
+        };
+
+        let captchaSolution;
+        let loginAttempts = 0;
+        const MAX_ATTEMPTS = 3;
+        let isBlocked = false;
+
+        // Генерация каптчи при загрузке страницы
+        window.onload = function() {
+            generateCaptcha();
+            updateAttemptsInfo();
+            
+            // Проверяем, был ли пользователь уже авторизован
+            const savedUser = localStorage.getItem('lastAuthUser');
+            if (savedUser) {
+                document.getElementById('username').value = savedUser;
+            }
+        };
+
+        function generateCaptcha() {
+            const operations = ['+', '-', '*'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            
+            let question, solution;
+            
+            switch(operation) {
+                case '+':
+                    question = `${num1} + ${num2} = ?`;
+                    solution = num1 + num2;
+                    break;
+                case '-':
+                    question = `${Math.max(num1, num2)} - ${Math.min(num1, num2)} = ?`;
+                    solution = Math.max(num1, num2) - Math.min(num1, num2);
+                    break;
+                case '*':
+                    question = `${num1} × ${num2} = ?`;
+                    solution = num1 * num2;
+                    break;
+            }
+            
+            document.getElementById('captcha-question').textContent = question;
+            captchaSolution = solution;
+            document.getElementById('captcha-answer').value = '';
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.show-password');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = 'Скрыть';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = 'Показать';
+            }
+        }
+
+        function updateAttemptsInfo() {
+            const attemptsInfo = document.getElementById('attempts-info');
+            if (loginAttempts > 0) {
+                attemptsInfo.textContent = `Неверных попыток: ${loginAttempts}/${MAX_ATTEMPTS}`;
+            } else {
+                attemptsInfo.textContent = '';
+            }
+        }
+
+        function blockLoginForm() {
+            isBlocked = true;
+            const loginBtn = document.querySelector('button[onclick="login()"]');
+            const originalText = loginBtn.textContent;
+            
+            let secondsLeft = 30;
+            loginBtn.disabled = true;
+            loginBtn.style.backgroundColor = '#dc3545';
+            loginBtn.textContent = `Заблокировано (${secondsLeft})`;
+            
+            const countdown = setInterval(() => {
+                secondsLeft--;
+                loginBtn.textContent = `Заблокировано (${secondsLeft})`;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdown);
+                    isBlocked = false;
+                    loginAttempts = 0;
+                    loginBtn.disabled = false;
+                    loginBtn.style.backgroundColor = '#0d6efd';
+                    loginBtn.textContent = originalText;
+                    updateAttemptsInfo();
+                }
+            }, 1000);
+        }
+
+        function login() {
+            if (isBlocked) return;
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const captchaAnswer = document.getElementById('captcha-answer').value.trim();
+            const errorElement = document.getElementById('error');
+            
+            // Очистка предыдущей ошибки
+            errorElement.textContent = '';
+            
+            // Валидация полей
+            if (!username || !password || !captchaAnswer) {
+                errorElement.textContent = 'Все поля обязательны для заполнения';
+                return;
+            }
+            
+            // Проверка каптчи
+            if (captchaAnswer !== captchaSolution.toString()) {
+                errorElement.textContent = 'Неверный ответ на каптчу';
+                generateCaptcha();
+                return;
+            }
+            
+            // Проверка логина и пароля
+            if (users[username] && users[username] === password) {
+                // Сброс счетчика попыток
+                loginAttempts = 0;
+                updateAttemptsInfo();
+                
+                // Сохраняем данные об авторизации
+                localStorage.setItem('lastAuthUser', username);
+                
+                // Перенаправление на соответствующую ссылку
+                window.location.href = redirectLinks[username];
+            } else {
+                // Увеличиваем счетчик попыток
+                loginAttempts++;
+                updateAttemptsInfo();
+                
+                // Проверяем, не превышено ли максимальное количество попыток
+                if (loginAttempts >= MAX_ATTEMPTS) {
+                    blockLoginForm();
+                    errorElement.textContent = 'Превышено количество попыток. Попробуйте позже.';
+                } else {
+                    errorElement.textContent = 'Неверный логин или пароль';
+                }
+                
+                generateCaptcha();
+            }
+        }
+        
+        // Функция для копирования текста в буфер обмена
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Показываем уведомление
+                showToast('Ссылка скопирована: ' + text);
+                
+                // Меняем стиль кнопки на 2 секунды
+                const button = event.target;
+                button.classList.add('copied');
+                setTimeout(function() {
+                    button.classList.remove('copied');
+                }, 2000);
+            }, function(err) {
+                showToast('Ошибка при копировании: ' + err);
+            });
+        }
+        
+        // Функция для показа toast-уведомления
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast__text');
+            
+            toastText.textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            
+            setTimeout(function() {
+                toast.classList.remove('flex');
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
